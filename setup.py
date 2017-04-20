@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='rapnet',
-    version='0.2.1',
+    version='0.3.4',
     description='An API SDK for Rapnet for Python 3',
     long_description=long_description,
     url='https://github.com/uroybd/rapnet',
@@ -23,6 +23,8 @@ setup(
         'Programming Language :: Python :: 3 :: Only'
     ],
     keywords='rapnet API',
-    packages=find_packages(),
+    packages=find_packages(where='src'),
+    package_dir={"": "src"},
+    py_modules=["rapnet"],
     install_requires=['requests'],
 )
