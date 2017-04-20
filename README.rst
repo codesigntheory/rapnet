@@ -1,6 +1,9 @@
 Rapnet API
 ==========
 
+.. image:: https://badge.fury.io/py/rapnet.svg
+    :target: https://badge.fury.io/py/rapnet
+
 This is a very primary API SDK to work with Rapnet_.
 
 ----
