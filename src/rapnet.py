@@ -12,6 +12,7 @@ class RapNetAPI:
 
     BASE_URL = "https://technet.rapaport.com"
     AUTH_URL = "/HTTP/Authenticate.aspx"
+    DLS_URL "/HTTP/DLS/GetFile.aspx"
     PRICE_SHEET_URL = ":449/HTTP/JSON/Prices/GetPriceSheet.aspx"
     PRICE_CHANGES_URL = ":449/HTTP/JSON/Prices/GetPriceChanges.aspx"
     PRICE_SHEET_INFO_URL = ":449/HTTP/JSON/Prices/GetPriceSheetInfo.aspx"
@@ -66,7 +67,7 @@ class RapNetAPI:
         elif mode == "TOKEN":
             return {'ticket': self._get_token}
 
-    def _get_data(self, url, body={}, mode="BASIC", header='self'):
+    def _get_data(self, url, body={}, mode="BASIC", header='self', raw=False):
         if header == 'self':
             header = self.FORM_HEADER
         if mode == "BASIC":
@@ -87,9 +88,11 @@ class RapNetAPI:
                                  json=json_body,
                                  params=params,
                                  headers=header).text
+        if raw:
+            return response
         data = json.loads(response)["response"]
         if data["header"]["error_code"] == 0:
-            return data["body"]
+                return data["body"]
         elif data["header"]["error_code"] == 4001:
             return {}
         else:
@@ -223,3 +226,14 @@ class RapNetAPI:
         else:
             with open(datafile, 'w') as d_file:
                 json.dump(data, d_file)
+
+    def get_dls(self, datafile=None):
+        """Get Download Listing Service Data."""
+        data = self._get_data(self.BASE_URL + self.DLS_URL,
+                               mode="TOKEN",
+                               raw=True)
+        if datafile is not None:
+            with open(datafile, 'w') as d_file:
+                d_file.write(data)
+        else:
+            return data

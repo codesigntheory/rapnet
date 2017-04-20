@@ -53,6 +53,10 @@ Functions
   *Arguments: datafile(format: String)[Optional]*
   Return all diamonds details in the API. Time Consuming, Beware!
 
+**get_dsl**
+  *Arguments: datafile(format: String)[Optional]*
+  Get Download Listing Service Data. Extra supscription needed.
+
 .. _Rapnet: https://technet.rapaport.com
 .. _`Premium JSON API`: https://technet.rapaport.com/Info/RapLink/Format_Json.aspx
 .. _`Price Doc`: https://technet.rapaport.com/Info/Prices/Format_Json.aspx
