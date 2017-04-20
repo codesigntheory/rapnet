@@ -3,13 +3,19 @@ import datetime
 import requests
 import json
 
-
 class RapNetAPI:
     """API SDK for RapNet"""
+    SHAPES = ["round", "pear", ""]
+    COLORS = ["D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"]
+    CLARITIES = ["IF", "VVS1", "VVS2", "VS1", "VS2",
+                 "SI1", "SI2", "SI3", "I1", "I2", "I3"]
 
     BASE_URL = "https://technet.rapaport.com"
     AUTH_URL = "/HTTP/Authenticate.aspx"
-    DATA_URL = "/HTTP/DLS/GetFile.aspx"
+    PRICE_SHEET_URL = ":449/HTTP/JSON/Prices/GetPriceSheet.aspx"
+    PRICE_CHANGES_URL = ":449/HTTP/JSON/Prices/GetPriceChanges.aspx"
+    PRICE_SHEET_INFO_URL = ":449/HTTP/JSON/Prices/GetPriceSheetInfo.aspx"
+    PRICE_URL = ":449/HTTP/JSON/Prices/GetPrice.aspx"
     ALL_DIAMONDS_URL = "/HTTP/JSON/RetailFeed/GetDiamonds.aspx"
     SINGLE_DIAMOND_URL = "/HTTP/JSON/RetailFeed/GetSingleDiamond.aspx"
     FORM_HEADER = {
@@ -22,9 +28,6 @@ class RapNetAPI:
         self.password = password
         self.token = None
         self.timestamp = None
-        self.cache = True
-        self.cache_time = datetime.timedelta(days=1)
-        self.all_diamonds_data = {}
 
     def _get_token(self):
         """Get token Smartly."""
@@ -54,18 +57,99 @@ class RapNetAPI:
         else:
             return self.token
 
-    @staticmethod
-    def _return_json(text):
-        data = json.loads(text)["response"]
-        print(data)
+    def _auth(self, mode="BASIC"):
+        if mode == "BASIC":
+            return {
+                    "username": self.username,
+                    "password": self.password
+                }
+        elif mode == "TOKEN":
+            return {'ticket': self._get_token}
+
+    def _get_data(self, url, body={}, mode="BASIC", header='self'):
+        if header == 'self':
+            header = self.FORM_HEADER
+        if mode == "BASIC":
+            json_body, params = {
+                "request": {
+                    "header": self._auth(),
+                    "body": body
+                }
+            }, {}
+        elif mode == "TOKEN":
+            json_body, params = {
+                "request": {
+                    "body": body
+                }
+            }, self._auth("TOKEN")
+
+        response = requests.post(url,
+                                 json=json_body,
+                                 params=params,
+                                 headers=header).text
+        data = json.loads(response)["response"]
         if data["header"]["error_code"] == 0:
             return data["body"]
+        elif data["header"]["error_code"] == 4001:
+            return {}
         else:
-            print("{}: {}".format(str(data["header"]["error_code"]),
+            raise Exception("{}: {}".format(str(data["header"]["error_code"]),
                                   data["header"]["error_message"]))
-            raise
 
-    def get_all_diamonds(self, params={"page_number": 1, "page_size": 20}):
+    def get_price_sheet_info(self):
+        """Get Price sheet metadata"""
+        return self._get_data(self.BASE_URL + self.PRICE_SHEET_INFO_URL)
+
+    def get_price_sheet(self, shape="round"):
+        """Get Price is by shape"""
+        if shape in self.SHAPES:
+            return self._get_data(self.BASE_URL + self.PRICE_SHEET_URL,
+                                  body={"shape": shape})
+        else:
+            raise Exception("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
+            
+
+    def get_price_changes(self, shape="round"):
+        """Get Price Changes is by shape"""
+        if shape in self.SHAPES:
+            return self._get_data(self.BASE_URL + self.PRICE_CHANGES_URL,
+                                  body={"shape": shape})
+        else:
+            raise Exception("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
+
+    def get_price(self, params={"shape": "round",
+                                "size": 2.10,
+                                "color": "E",
+                                "clarity": "VS2"}):
+        """Return a list of diamond pricing by filtering
+        with params [JSON] (if provided else default).
+
+        Keyword arguments:
+        params -- filter paramters in json.
+
+        For Further Information Consult:
+        https://technet.rapaport.com/Info/Prices/Format_Json.aspx
+        """
+        search_params = params
+        if "shape" not in search_params or \
+           search_params["shape"] not in self.SHAPES:
+            search_params["shape"] = "round"
+        if "color" not in search_params or \
+           search_params["color"] not in self.COLORS:
+            search_params["color"] = "E"
+        if "clarity" not in search_params or \
+           search_params["clarity"] not in self.CLARITIES:
+            search_params["clarity"] = "VS2"
+        if "size" not in search_params:
+            search_params["size"] = 2.10
+
+        try:
+            return self._get_data(self.BASE_URL + self.PRICE_URL,
+                                  body=search_params)
+        except:
+            raise Exception("Can't get data")
+
+    def get_diamonds_list(self, params={"page_number": 1, "page_size": 20}):
         """Return a list of diamonds by filtering
         with params [JSON] (if provided else default).
 
@@ -107,50 +191,35 @@ class RapNetAPI:
         if "page_size" not in search_params:
             search_params["page_size"] = 1
 
-        body = {
-            "request": {
-                "header": {
-                    "username": self.username,
-                    "password": self.password
-                },
-                "body": search_params
-            }
-        }
-
         try:
-            response = requests.post(self.BASE_URL + self.ALL_DIAMONDS_URL,
-                                     json=body,
-                                     headers=self.FORM_HEADER,)
-
-            return self._return_json(response.text)
+            return self._get_data(self.BASE_URL + self.ALL_DIAMONDS_URL,
+                                  body=search_params)
         except:
-            print("Can't get data")
-            raise
+            raise Exception("Can't get data")
 
     def get_diamond(self, id):
         """Return a diamond by id."""
         if isinstance(id, int):
-            body = {
-                "request": {
-                    "header": {
-                        "username": self.username,
-                        "password": self.password
-                    },
-                    "body": {
-                        "diamond_id": id
-                    }
-                }
-            }
-
             try:
-                response = requests.post(self.BASE_URL + self.SINGLE_DIAMOND_URL,
-                                         json=body,
-                                         headers=self.FORM_HEADER)
-
-                return self._return_json(response.text)
+                return self._get_data(self.BASE_URL + self.SINGLE_DIAMOND_URL,
+                                      body={"diamond_id": id})
             except:
-                print("Can't get data")
-                raise
+                raise Exception("Can't get data")
         else:
-            print("diamond_id must be a Integer")
-            raise
+            raise Exception("diamond_id must be a Integer")
+
+    def get_all_diamonds(self, datafile=None):
+        "Get all diamonds data from API"
+        page1 = self.get_diamonds_list(params={"page_number": 1,
+                                               "page_size": 50})
+        data = page1['diamonds']
+        total = page1["search_results"]["total_diamonds_found"]
+        total_pages = (total // 50) - 0 if total % 50 > 0 else 1
+        for page in range(2, total_pages+1):
+            data.append(self.get_diamonds_list(params={"page_number": 1,
+                                                       "page_size": 50})['diamonds'])
+        if datafile is None:
+            return data
+        else:
+            with open(datafile, 'w') as d_file:
+                json.dump(data, d_file)

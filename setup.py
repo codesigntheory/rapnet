@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='rapnet',
-    version='0.3.4',
+    version='1.0.0',
     description='An API SDK for Rapnet for Python 3',
     long_description=long_description,
     url='https://github.com/uroybd/rapnet',
@@ -16,7 +16,7 @@ setup(
     author_email='uroybd@gmail.com',
     license='MIT',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'License :: OSI Approved :: MIT License',
