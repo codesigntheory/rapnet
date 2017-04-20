@@ -93,7 +93,7 @@ class RapNetAPI:
         elif data["header"]["error_code"] == 4001:
             return {}
         else:
-            raise Exception("{}: {}".format(str(data["header"]["error_code"]),
+            raise RuntimeWarning("{}: {}".format(str(data["header"]["error_code"]),
                                   data["header"]["error_message"]))
 
     def get_price_sheet_info(self):
@@ -106,7 +106,7 @@ class RapNetAPI:
             return self._get_data(self.BASE_URL + self.PRICE_SHEET_URL,
                                   body={"shape": shape})
         else:
-            raise Exception("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
+            raise RuntimeWarning("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
             
 
     def get_price_changes(self, shape="round"):
@@ -115,7 +115,7 @@ class RapNetAPI:
             return self._get_data(self.BASE_URL + self.PRICE_CHANGES_URL,
                                   body={"shape": shape})
         else:
-            raise Exception("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
+            raise RuntimeWarning("Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
 
     def get_price(self, params={"shape": "round",
                                 "size": 2.10,
@@ -147,7 +147,7 @@ class RapNetAPI:
             return self._get_data(self.BASE_URL + self.PRICE_URL,
                                   body=search_params)
         except:
-            raise Exception("Can't get data")
+            raise RuntimeWarning("Can't get data")
 
     def get_diamonds_list(self, params={"page_number": 1, "page_size": 20}):
         """Return a list of diamonds by filtering
@@ -195,7 +195,7 @@ class RapNetAPI:
             return self._get_data(self.BASE_URL + self.ALL_DIAMONDS_URL,
                                   body=search_params)
         except:
-            raise Exception("Can't get data")
+            raise RuntimeWarning("Can't get data")
 
     def get_diamond(self, id):
         """Return a diamond by id."""
@@ -204,9 +204,9 @@ class RapNetAPI:
                 return self._get_data(self.BASE_URL + self.SINGLE_DIAMOND_URL,
                                       body={"diamond_id": id})
             except:
-                raise Exception("Can't get data")
+                raise RuntimeWarning("Can't get data")
         else:
-            raise Exception("diamond_id must be a Integer")
+            raise RuntimeWarning("diamond_id must be a Integer")
 
     def get_all_diamonds(self, datafile=None):
         "Get all diamonds data from API"
