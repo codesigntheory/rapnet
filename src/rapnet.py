@@ -3,6 +3,13 @@ import datetime
 import requests
 import json
 
+__author__ = "Utsob Roy"
+__license__ = "MIT"
+__version__ = "2.1.0"
+__maintainer__ = "Utsob Roy"
+__email__ = "utsob@codesign.com.bd"
+__status__ = "Production"
+
 
 class RapNetAPI:
     """API Client Library class for RapNet"""
@@ -170,33 +177,7 @@ class RapNetAPI:
         with params [JSON] (if provided else default).
 
         Keyword arguments:
-        params -- filter paramters in json. An example:
-        {
-            "search_type": "White",
-            "shapes": ["round","Princess","pear"],
-            "size_from": 0.2,
-            "size_to": 15.3,
-            "color_from": "D",
-            "color_to": "K",
-            "clarity_from": "IF",
-            "clarity_to": "VS2",
-            "cut_from": "Excellent",
-            "cut_to": "Fair",
-            "polish_from": "Excellent",
-            "polish_to": "Fair",
-            "symmetry_from": "Excellent",
-            "symmetry_to": "Fair",
-            "price_total_from": 100,
-            "price_total_to": 150000,
-            "labs": ["GIA","IGI"],
-            "table_percent_from": "26.0",
-            "table_percent_to": "66.0",
-            "eye_cleans": ["Yes", "Borderline"],
-            "page_number": 1,
-            "page_size": 20,
-            "sort_by": "price",
-            "sort_direction": "Asc"
-        }
+        params -- filter paramters in json.
 
         For Further Information Consult:
         https://technet.rapaport.com/Info/RapLink/Format_Json.aspx

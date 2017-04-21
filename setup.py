@@ -8,12 +8,12 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='rapnet',
-    version='2.0.2',
+    version='2.1.0',
     description='An API Client Library for Rapnet for Python 3',
     long_description=long_description,
-    url='https://github.com/uroybd/rapnet',
+    url='https://github.com/codesigntheory/rapnet',
     author='Utsob Roy',
-    author_email='uroybd@gmail.com',
+    author_email='utsob@codesign.com.bd',
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
