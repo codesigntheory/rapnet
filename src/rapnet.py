@@ -71,7 +71,7 @@ class RapNetAPI:
             return {'ticket': self._get_token}
 
     def _get_data(self, url, body={}, mode="BASIC",
-                  header='self', raw=False, data={}, files=None):
+                  header='self', raw=False, data={}, extras={}):
         if header == 'self':
             header = self.FORM_HEADER
         if mode == "BASIC":
@@ -92,7 +92,8 @@ class RapNetAPI:
         response = requests.post(url,
                                  json=json_body,
                                  data=params,
-                                 headers=header).text
+                                 headers=header,
+                                 **extras).text
         if raw:
             return response
         data = json.loads(response)["response"]
@@ -273,4 +274,6 @@ class RapNetAPI:
                               data={
                                   "ReplaceAll": "false"
                               },
-                              raw=True)
+                              raw=True,
+                              extras={'files':{'file': open(uploadfile,
+                                                            'rb')}})

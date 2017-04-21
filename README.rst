@@ -11,6 +11,15 @@ This is a very primary API SDK to work with Rapnet_.
 Currently it only supports `Premium JSON API`_ and `Price List API`_, DSL_ and `Upload API`_.
 
 
+============
+Installation
+============
+Via pip:
+.. code:: bash
+   
+   pip install rapnet
+
+
 =====
 Usage
 =====
