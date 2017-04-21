@@ -15,6 +15,7 @@ Currently it only supports `Premium JSON API`_ and `Price List API`_, DSL_ and `
 Installation
 ============
 Via pip:
+
 .. code:: bash
    
    pip install rapnet
