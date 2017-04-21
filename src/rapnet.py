@@ -1,11 +1,11 @@
-"""Rapnet SDK for Python3"""
+"""Rapnet API Client Library for Python3"""
 import datetime
 import requests
 import json
 
 
 class RapNetAPI:
-    """API SDK for RapNet"""
+    """API Client Library class for RapNet"""
     SHAPES = ["round", "pear", ""]
     COLORS = ["D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"]
     CLARITIES = ["IF", "VVS1", "VVS2", "VS1", "VS2",
@@ -62,6 +62,7 @@ class RapNetAPI:
             return self.token
 
     def _auth(self, mode="BASIC"):
+        "Get Authentication Meta."
         if mode == "BASIC":
             return {
                     "username": self.username,
@@ -72,6 +73,7 @@ class RapNetAPI:
 
     def _get_data(self, url, body={}, mode="BASIC",
                   header='self', raw=False, data={}, extras={}):
+        """Base function for flexible request."""
         if header == 'self':
             header = self.FORM_HEADER
         if mode == "BASIC":
