@@ -8,7 +8,7 @@ This is a very primary API SDK to work with Rapnet_.
 
 ----
 
-Currently it only supports `Premium JSON API`_ and Price List API.
+Currently it only supports `Premium JSON API`_ and `Price List API`_, DSL_ and `Upload API`_.
 
 
 =====
@@ -57,7 +57,22 @@ Functions
   *Arguments: datafile(format: String)[Optional]*
   Get Download Listing Service Data. Extra supscription needed.
 
+**upload_string**
+  *Arguments: datastring(format: String)*
+  Upload single diamond details in a string.
+  For formatting details consult:
+  https://technet.rapaport.com/Info/LotUpload/Upload_HTTP.aspx
+
+**upload_csv**
+  *Arguments: uploadfile(format: String)*
+  Upload diamonds details in a csv file.
+  For formatting details consult:
+  https://technet.rapaport.com/Info/LotUpload/Upload_HTTP.aspx
+
 .. _Rapnet: https://technet.rapaport.com
 .. _`Premium JSON API`: https://technet.rapaport.com/Info/RapLink/Format_Json.aspx
 .. _`Price Doc`: https://technet.rapaport.com/Info/Prices/Format_Json.aspx
 .. _`Details Doc`: https://technet.rapaport.com/Info/RapLink/Format_Json.aspx
+.. _`Price List API`: https://technet.rapaport.com/Info/Prices/Format_Json.aspx
+.. _DSL: https://technet.rapaport.com/Info/Dls/Integration.aspx
+.. _`Upload API`: https://technet.rapaport.com/Info/Landing/UploadDiamonds.aspx
