@@ -5,7 +5,7 @@ import json
 
 __author__ = "Utsob Roy"
 __license__ = "MIT"
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 __maintainer__ = "Utsob Roy"
 __email__ = "utsob@codesign.com.bd"
 __status__ = "Production"
@@ -51,9 +51,10 @@ class RapNetAPI:
                     'username': self.username,
                     'password': self.password
                 }
-                response = requests.post(self.BASE_URL + self.AUTH_URL,
-                                         data=params,
-                                         headers=self.FORM_HEADER)
+                response = requests.post(
+                    self.BASE_URL + self.AUTH_URL,
+                    data=params,
+                    headers=self.FORM_HEADER)
 
                 if response.status_code == 200:
                     self.token = response.text
@@ -72,9 +73,9 @@ class RapNetAPI:
         "Get Authentication Meta."
         if mode == "BASIC":
             return {
-                    "username": self.username,
-                    "password": self.password
-                }
+                "username": self.username,
+                "password": self.password
+            }
         elif mode == "TOKEN":
             return {'ticket': self._get_token}
 
@@ -98,11 +99,11 @@ class RapNetAPI:
             }, self._auth("TOKEN")
 
         params.update(data)
-        response = requests.post(url,
-                                 json=json_body,
-                                 data=params,
-                                 headers=header,
-                                 **extras).text
+        response = requests.post(
+            url, json=json_body,
+            data=params, headers=header,
+            **extras
+        ).text
         if raw:
             return response
         data = json.loads(response)["response"]
@@ -112,9 +113,9 @@ class RapNetAPI:
             return {}
         else:
             raise RuntimeWarning(
-                "{}: {}".format(str(data["header"]["error_code"]),
-                                data["header"]["error_message"])
-            )
+                "{}: {}".format(
+                    str(data["header"]["error_code"]),
+                    data["header"]["error_message"]))
 
     def get_price_sheet_info(self):
         """Get Price sheet metadata"""
@@ -123,12 +124,12 @@ class RapNetAPI:
     def get_price_sheet(self, shape="round"):
         """Get Price is by shape"""
         if shape in self.SHAPES:
-            return self._get_data(self.BASE_URL + self.PRICE_SHEET_URL,
-                                  body={"shape": shape})
+            return self._get_data(
+                self.BASE_URL + self.PRICE_SHEET_URL,
+                body={"shape": shape})
         else:
             raise RuntimeWarning(
-                "Invalid Shape Choose from {}.".format(", ".join(self.SHAPES))
-            )
+                "Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
 
     def get_price_changes(self, shape="round"):
         """Get Price Changes is by shape"""
@@ -137,8 +138,7 @@ class RapNetAPI:
                                   body={"shape": shape})
         else:
             raise RuntimeWarning(
-                "Invalid Shape Choose from {}.".format(", ".join(self.SHAPES))
-            )
+                "Invalid Shape Choose from {}.".format(", ".join(self.SHAPES)))
 
     def get_price(self, params={"shape": "round",
                                 "size": 2.10,
@@ -167,8 +167,10 @@ class RapNetAPI:
             search_params["size"] = 2.10
 
         try:
-            return self._get_data(self.BASE_URL + self.PRICE_URL,
-                                  body=search_params)
+            return self._get_data(
+                self.BASE_URL + self.PRICE_URL,
+                body=search_params
+            )
         except:
             raise RuntimeWarning("Can't get data")
 
@@ -189,8 +191,10 @@ class RapNetAPI:
             search_params["page_size"] = 1
 
         try:
-            return self._get_data(self.BASE_URL + self.ALL_DIAMONDS_URL,
-                                  body=search_params)
+            return self._get_data(
+                self.BASE_URL + self.ALL_DIAMONDS_URL,
+                body=search_params
+            )
         except:
             raise RuntimeWarning("Can't get data")
 
@@ -198,8 +202,10 @@ class RapNetAPI:
         """Return a diamond by id."""
         if isinstance(id, int):
             try:
-                return self._get_data(self.BASE_URL + self.SINGLE_DIAMOND_URL,
-                                      body={"diamond_id": id})
+                return self._get_data(
+                    self.BASE_URL + self.SINGLE_DIAMOND_URL,
+                    body={"diamond_id": id}
+                )
             except:
                 raise RuntimeWarning("Can't get data")
         else:
@@ -207,15 +213,18 @@ class RapNetAPI:
 
     def get_all_diamonds(self, datafile=None):
         "Get all diamonds data from API"
-        page1 = self.get_diamonds_list(params={"page_number": 1,
-                                               "page_size": 50})
+        page1 = self.get_diamonds_list(
+            params={"page_number": 1,
+                    "page_size": 50}
+        )
         data = page1['diamonds']
         total = page1["search_results"]["total_diamonds_found"]
         total_pages = (total // 50) - 0 if total % 50 > 0 else 1
         for page in range(2, total_pages+1):
             data.append(
-                self.get_diamonds_list(params={"page_number": 1,
-                                               "page_size": 50})['diamonds']
+                self.get_diamonds_list(
+                    params={"page_number": 1,
+                            "page_size": 50})['diamonds']
             )
         if datafile is None:
             return data
@@ -225,9 +234,11 @@ class RapNetAPI:
 
     def get_dls(self, datafile=None):
         """Get Download Listing Service Data."""
-        data = self._get_data(self.BASE_URL + self.DLS_URL,
-                              mode="TOKEN",
-                              raw=True)
+        data = self._get_data(
+            self.BASE_URL + self.DLS_URL,
+            mode="TOKEN",
+            raw=True
+        )
         if datafile is not None:
             with open(datafile, 'w') as d_file:
                 d_file.write(data)
@@ -243,9 +254,7 @@ class RapNetAPI:
                               mode="TOKEN",
                               data={
                                   "UploadCSVString": datastring,
-                                  "ReplaceAll": "false"
-                              },
-                              raw=True)
+                                  "ReplaceAll": "false"}, raw=True)
 
     def upload_csv(self, uploadfile):
         """Upload diamonds details in a csv file.
@@ -256,7 +265,7 @@ class RapNetAPI:
                               mode="TOKEN",
                               data={
                                   "ReplaceAll": "false"
-                              },
-                              raw=True,
-                              extras={'files':{'file': open(uploadfile,
-                                                            'rb')}})
+                              }, raw=True,
+                              extras={'files': {
+                                  'file': open(uploadfile,
+                                               'rb')}})

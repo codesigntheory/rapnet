@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='rapnet',
-    version='2.1.0',
+    version='2.1.1',
     description='An API Client Library for Rapnet for Python 3',
     long_description=long_description,
     url='https://github.com/codesigntheory/rapnet',
