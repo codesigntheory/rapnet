@@ -212,7 +212,7 @@ class RapNetAPI:
         else:
             raise RuntimeWarning("diamond_id must be a Integer")
 
-    def get_all_diamonds(self, datafile=None):
+    def get_all_diamonds(self, datafile=None, verbose=False):
         "Get all diamonds data from API"
         page1 = self.get_diamonds_list(
             params={"page_number": 1,
@@ -220,13 +220,18 @@ class RapNetAPI:
         )
         data = page1['diamonds']
         total = page1["search_results"]["total_diamonds_found"]
-        total_pages = (total // 50) - 0 if total % 50 > 0 else 1
+        total_pages = (total // 50) - (0 if total % 50 > 0 else 1)
+        if verbose is True:
+            print("Total Diamonds: {total}")
+            print("Total Pages: {total_pages}")
         for page in range(2, total_pages+1):
             data.append(
                 self.get_diamonds_list(
                     params={"page_number": 1,
                             "page_size": 50})['diamonds']
             )
+            if verbose is True:
+                print("Page: {Page}")
         if datafile is None:
             return data
         else:
