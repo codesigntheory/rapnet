@@ -222,8 +222,8 @@ class RapNetAPI:
         total = page1["search_results"]["total_diamonds_found"]
         total_pages = (total // 50) - (0 if total % 50 > 0 else 1)
         if verbose is True:
-            print("Total Diamonds: {total}")
-            print("Total Pages: {total_pages}")
+            print("Total Diamonds: {}".format(total))
+            print("Total Pages: {}".format(total_pages))
         for page in range(2, total_pages+1):
             data.append(
                 self.get_diamonds_list(
@@ -231,7 +231,7 @@ class RapNetAPI:
                             "page_size": 50})['diamonds']
             )
             if verbose is True:
-                print("Page: {Page}")
+                print("Page: ".format(page))
         if datafile is None:
             return data
         else:
