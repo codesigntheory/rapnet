@@ -231,7 +231,7 @@ class RapNetAPI:
                             "page_size": 50})['diamonds']
             )
             if verbose is True:
-                print("Page: ".format(page))
+                print("Page: {}".format(page))
         if datafile is None:
             return data
         else:
