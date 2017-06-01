@@ -107,7 +107,9 @@ class RapNetAPI:
         ).text
         if raw:
             return response
-        data = json.loads(response)["response"]
+        data = json.loads(
+            response.replace('\n', '').replace('\r', '').replace('\t', '')
+        )["response"]
         if data["header"]["error_code"] == 0:
                 return data["body"]
         elif data["header"]["error_code"] == 4001:
@@ -225,11 +227,9 @@ class RapNetAPI:
             print("Total Diamonds: {}".format(total))
             print("Total Pages: {}".format(total_pages))
         for page in range(2, total_pages+1):
-            data.append(
-                self.get_diamonds_list(
-                    params={"page_number": 1,
-                            "page_size": 50})['diamonds']
-            )
+            data = data + self.get_diamonds_list(
+                params={"page_number": 1,
+                        "page_size": 50})['diamonds']
             if verbose is True:
                 print("Page: {}".format(page))
         if datafile is None:
