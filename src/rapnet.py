@@ -3,6 +3,7 @@
 import datetime
 import requests
 import json
+from multiprocessing import Pool
 
 __author__ = "Utsob Roy"
 __license__ = "MIT"
@@ -214,24 +215,35 @@ class RapNetAPI:
         else:
             raise RuntimeWarning("diamond_id must be a Integer")
 
-    def get_all_diamonds(self, datafile=None, verbose=False):
+    def get_all_diamonds(self, search_type="White", datafile=None, verbose=False,
+                         multiprocessing=False, pool=0):
         "Get all diamonds data from API"
+        data = []
         page1 = self.get_diamonds_list(
             params={"page_number": 1,
-                    "page_size": 50}
+                    "page_size": 50,
+                    "search_type": search_type}
         )
-        data = page1['diamonds']
+        data.append(page1['diamonds'])
         total = page1["search_results"]["total_diamonds_found"]
         total_pages = (total // 50) - (0 if total % 50 > 0 else 1)
         if verbose is True:
             print("Total Diamonds: {}".format(total))
             print("Total Pages: {}".format(total_pages))
-        for page in range(2, total_pages+1):
-            data = data + self.get_diamonds_list(
-                params={"page_number": 1,
-                        "page_size": 50})['diamonds']
+        if multiprocessing is False:
+            for page in range(2, total_pages+1):
+                data.append(self.get_diamonds_list(
+                    params={"page_number": page,
+                            "page_size": 50,
+                            "search_type": search_type})['diamonds'])
             if verbose is True:
                 print("Page: {}".format(page))
+        else:
+            if pool == 0:
+                page_pool = Pool()
+            else:
+                page_pool = Pool(pool)
+            data = 
         if datafile is None:
             return data
         else:

@@ -29,7 +29,7 @@ Simply Instantiate a ``RapNetAPI`` object with proper ``usernmae`` and ``passwor
 .. code:: python
 
    from rapnet import RapNetAPI
-   rapi = RapNetAPI()
+   rapi = RapNetAPI(username, password)
 
 
 Functions
