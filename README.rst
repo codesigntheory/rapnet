@@ -1,4 +1,4 @@
-Rapnet API
+Rapnet Python SDK
 ==========
 
 .. image:: https://badge.fury.io/py/rapnet.svg
