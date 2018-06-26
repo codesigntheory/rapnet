@@ -1,3 +1,7 @@
+Warning!!!
+==========
+This project is moved to https://gitlab.com/codesigntheory/rapnet
+
 Rapnet Python SDK
 ==========
 
